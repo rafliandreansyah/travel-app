@@ -6,6 +6,7 @@ use App\Filament\Resources\CarResource\Pages;
 use App\Filament\Resources\CarResource\RelationManagers;
 use App\Models\Car;
 use Filament\Forms;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -25,45 +26,68 @@ class CarResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Grid::make(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('year')
+                            ->required()
+                            ->numeric(),
+                        Forms\Components\TextInput::make('capacity')
+                            ->required()
+                            ->numeric(),
+                        Forms\Components\TextInput::make('cc')
+                            ->label('CC')
+                            ->required()
+                            ->numeric(),
+                        Forms\Components\TextInput::make('luggage')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('luggage')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('price_per_day')
+                            ->required()
+                            ->numeric(),
+
+                        Forms\Components\Select::make('transmission')
+                            ->options([
+                                'manual' => 'Manual',
+                                'automatic' => 'Automatic',
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('tax')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('discount')
+                            ->numeric(),
+                        Forms\Components\Select::make('fuel_type')
+                            ->options([
+                                'solar' => 'Solar',
+                                'bensin' => 'Bensin',
+                                'listrik' => 'Listrik',
+                            ])
+                            ->required(),
+                        Forms\Components\Select::make('brand_id')
+                            ->relationship('brand', 'name')
+                            ->required(),
+                    ]),
+
                 Forms\Components\FileUpload::make('image_url')
+                    ->label('Car Photo')
                     ->image()
-                    ->required(),
-                Forms\Components\TextInput::make('year')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('capacity')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('luggage')
-                    ->numeric(),
-                Forms\Components\TextInput::make('cc')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('price_per_day')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('tax')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('discount')
-                    ->required()
-                    ->numeric(),
+                    ->columnSpanFull(),
+                Forms\Components\FileUpload::make('image_url')
+                    ->label('Car Highlights')
+                    ->image()
+                    ->multiple()
+                    ->imageEditor()
+                    ->columnSpanFull(),
+
                 Forms\Components\Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('transmission')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('fuel_type')
-                    ->required()
-                    ->maxLength(255),
+
                 Forms\Components\Toggle::make('active')
-                    ->required(),
-                Forms\Components\Select::make('brand_id')
-                    ->relationship('brand', 'name')
                     ->required(),
             ]);
     }
@@ -72,11 +96,9 @@ class CarResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID'),
+                Tables\Columns\ImageColumn::make('image_url'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\ImageColumn::make('image_url'),
                 Tables\Columns\TextColumn::make('year')
                     ->numeric()
                     ->sortable(),

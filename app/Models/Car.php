@@ -40,6 +40,16 @@ class Car extends Model
         return $this->hasMany(CarsImageDetail::class);
     }
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function carRenteds(): HasMany
+    {
+        return $this->hasMany(CarRented::class);
+    }
+
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = strtolower($value);

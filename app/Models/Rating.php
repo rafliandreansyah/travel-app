@@ -4,20 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class CarsImageDetail extends Model
+class Rating extends Model
 {
     use HasFactory, HasUuids;
 
     protected $fillable = [
-        'image_url',
         'car_id',
+        'user_id',
+        'rating',
+        'comment',
+        'image_url',
     ];
+
 
     public function car(): BelongsTo
     {
         return $this->belongsTo(Car::class);
+    }
+
+    public function user(): BelongsTo
+
+    {
+        return $this->belongsTo(User::class);
     }
 }

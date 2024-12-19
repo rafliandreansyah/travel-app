@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('postal_code');
             $table->string('phone_number');
-            $table->boolean('active', true);
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

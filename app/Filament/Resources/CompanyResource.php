@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CompanyResource\Pages;
-use App\Filament\Resources\CompanyResource\RelationManagers;
-use App\Models\Company;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Company;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\CompanyResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CompanyResource\RelationManagers;
 
 class CompanyResource extends Resource
 {
@@ -95,12 +96,16 @@ class CompanyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('travel_name')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable(),
                 Tables\Columns\TextColumn::make('province')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable(),
                 Tables\Columns\TextColumn::make('city')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucfirst())
                     ->searchable(),
                 Tables\Columns\TextColumn::make('postal_code')
                     ->searchable(),

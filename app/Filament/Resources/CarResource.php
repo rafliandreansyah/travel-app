@@ -2,18 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CarResource\Pages;
-use App\Filament\Resources\CarResource\RelationManagers;
 use App\Models\Car;
 use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\CarResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\CarResource\RelationManagers;
 
 class CarResource extends Resource
 {
@@ -98,15 +99,15 @@ class CarResource extends Resource
                 Tables\Columns\ImageColumn::make('image_url')
                     ->label('Car'),
                 Tables\Columns\TextColumn::make('name')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable(),
                 Tables\Columns\TextColumn::make('year')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('capacity')
-                    ->numeric()
+                    ->formatStateUsing(fn(string $state): string => $state > 1 ? __("{$state} People") : __("{$state} Person"))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price_per_day')
-                    ->numeric()
+                    ->money('IDR', locale: 'id')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('luggage')
@@ -127,6 +128,7 @@ class CarResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('transmission')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -135,6 +137,7 @@ class CarResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('brand.name')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

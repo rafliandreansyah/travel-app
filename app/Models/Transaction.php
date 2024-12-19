@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
 {
@@ -39,5 +40,10 @@ class Transaction extends Model
     public function carRented(): HasOne
     {
         return $this->hasOne(Car::class);
+    }
+
+    public function setUserApprovedAttribute($value)
+    {
+        $this->attributes['user_approved'] = strtolower($value);
     }
 }

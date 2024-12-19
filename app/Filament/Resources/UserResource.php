@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\UserResource\RelationManagers;
 
 class UserResource extends Resource
 {
@@ -74,12 +75,14 @@ class UserResource extends Resource
                     ->circular()
                     ->defaultImageUrl(asset('images/user_placeholder.jpg')),
                 Tables\Columns\TextColumn::make('name')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('role')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable(),
                 Tables\Columns\IconColumn::make('active')
                     ->boolean(),

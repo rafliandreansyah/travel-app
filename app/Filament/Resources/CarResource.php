@@ -7,6 +7,7 @@ use App\Filament\Resources\CarResource\RelationManagers;
 use App\Models\Car;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -18,7 +19,7 @@ class CarResource extends Resource
 {
     protected static ?string $model = Car::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'icon-car';
 
     protected static ?string $navigationGroup = 'Master Cars';
 
@@ -43,18 +44,15 @@ class CarResource extends Resource
                             ->numeric(),
                         Forms\Components\TextInput::make('luggage')
                             ->numeric(),
-                        Forms\Components\TextInput::make('luggage')
-                            ->numeric(),
-                        Forms\Components\TextInput::make('price_per_day')
-                            ->required()
-                            ->numeric(),
-
                         Forms\Components\Select::make('transmission')
                             ->options([
                                 'manual' => 'Manual',
                                 'automatic' => 'Automatic',
                             ])
                             ->required(),
+                        Forms\Components\TextInput::make('price_per_day')
+                            ->required()
+                            ->numeric(),
                         Forms\Components\TextInput::make('tax')
                             ->numeric(),
                         Forms\Components\TextInput::make('discount')
@@ -70,23 +68,24 @@ class CarResource extends Resource
                             ->relationship('brand', 'name')
                             ->required(),
                     ]),
-
+                Forms\Components\Textarea::make('description')
+                    ->required()
+                    ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image_url')
                     ->label('Car Photo')
                     ->image()
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('image_url')
+                Repeater::make('imageDetails')
                     ->label('Car Highlights')
-                    ->image()
-                    ->multiple()
-                    ->imageEditor()
+                    ->relationship()
+                    ->schema([
+                        Forms\Components\FileUpload::make('image_url')
+                            ->label('Car Photo')
+                            ->image()
+                            ->imageEditor()
+                    ])
                     ->columnSpanFull(),
-
-                Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
-
                 Forms\Components\Toggle::make('active')
                     ->required(),
             ]);
@@ -96,7 +95,8 @@ class CarResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image_url'),
+                Tables\Columns\ImageColumn::make('image_url')
+                    ->label('Car'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('year')
@@ -105,28 +105,41 @@ class CarResource extends Resource
                 Tables\Columns\TextColumn::make('capacity')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('luggage')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('cc')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('price_per_day')
                     ->numeric()
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('luggage')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('cc')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('tax')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('discount')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('transmission')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('fuel_type')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('brand.name')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('active')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('brand.name'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -28,12 +28,12 @@ return new class extends Migration
             $table->integer('luggage')->nullable();
             $table->integer('cc');
             $table->double('price_per_day');
-            $table->double('tax', 0.0);
-            $table->double('discount', 0.0);
+            $table->double('tax')->nullable()->default(0.0);
+            $table->double('discount')->nullable()->default(0.0);
             $table->longText('description');
             $table->string('transmission');
             $table->string('fuel_type');
-            $table->boolean('active', true);
+            $table->boolean('active')->nullable()->default(true);
             $table->foreignUuid('brand_id')->constrained();
             $table->timestamps();
         });

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
 use Filament\Forms\Get;
+use Illuminate\Support\Carbon;
 
 class TransactionResource extends Resource
 {
@@ -32,11 +33,19 @@ class TransactionResource extends Resource
                     ->numeric()
                     ->suffix('Day'),
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
+                    ->relationship(
+                        'user',
+                        'name',
+                        modifyQueryUsing: fn(Builder $query) => $query->where('active', 1)
+                    )
                     ->required(),
 
                 Forms\Components\Select::make('car_id')
-                    ->relationship('car', 'name')
+                    ->relationship(
+                        'car',
+                        'name',
+                        modifyQueryUsing: fn(Builder $query) => $query->where('active', 1)
+                    )
                     ->required(),
                 Forms\Components\Select::make('status')
                     ->options([

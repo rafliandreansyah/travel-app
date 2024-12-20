@@ -41,7 +41,10 @@ return new class extends Migration
         Schema::create('cars_image_details', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('image_url');
-            $table->foreignUuid('car_id')->constrained();
+            $table->foreignUuid('car_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');;
             $table->timestamps();
         });
     }

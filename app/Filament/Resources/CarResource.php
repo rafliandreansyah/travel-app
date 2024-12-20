@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CarResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CarResource\RelationManagers;
+use Filament\Forms\Components\Fieldset;
 
 class CarResource extends Resource
 {
@@ -38,25 +39,11 @@ class CarResource extends Resource
                             ->numeric(),
                         Forms\Components\TextInput::make('capacity')
                             ->required()
-                            ->numeric(),
+                            ->numeric()
+                            ->suffix('Person'),
                         Forms\Components\TextInput::make('cc')
                             ->label('CC')
                             ->required()
-                            ->numeric(),
-                        Forms\Components\TextInput::make('luggage')
-                            ->numeric(),
-                        Forms\Components\Select::make('transmission')
-                            ->options([
-                                'manual' => 'Manual',
-                                'automatic' => 'Automatic',
-                            ])
-                            ->required(),
-                        Forms\Components\TextInput::make('price_per_day')
-                            ->required()
-                            ->numeric(),
-                        Forms\Components\TextInput::make('tax')
-                            ->numeric(),
-                        Forms\Components\TextInput::make('discount')
                             ->numeric(),
                         Forms\Components\Select::make('fuel_type')
                             ->options([
@@ -65,9 +52,33 @@ class CarResource extends Resource
                                 'listrik' => 'Listrik',
                             ])
                             ->required(),
+                        Forms\Components\Select::make('transmission')
+                            ->options([
+                                'manual' => 'Manual',
+                                'automatic' => 'Automatic',
+                            ])
+                            ->required(),
                         Forms\Components\Select::make('brand_id')
                             ->relationship('brand', 'name')
                             ->required(),
+                        Forms\Components\TextInput::make('luggage')
+                            ->numeric(),
+                        Fieldset::make('Pricing')
+                            ->schema([
+                                Grid::make(3)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('price_per_day')
+                                            ->required()
+                                            ->prefix('Rp.')
+                                            ->numeric(),
+                                        Forms\Components\TextInput::make('tax')
+                                            ->numeric()
+                                            ->suffixIcon('heroicon-m-percent-badge'),
+                                        Forms\Components\TextInput::make('discount')
+                                            ->numeric()
+                                            ->suffixIcon('heroicon-m-percent-badge'),
+                                    ]),
+                            ]),
                     ]),
                 Forms\Components\Textarea::make('description')
                     ->required()
@@ -75,6 +86,9 @@ class CarResource extends Resource
                 Forms\Components\FileUpload::make('image_url')
                     ->label('Car Photo')
                     ->image()
+                    ->disk('gcs')
+                    ->directory('cars')
+                    ->visibility('public')
                     ->required()
                     ->columnSpanFull(),
                 Repeater::make('imageDetails')
@@ -85,6 +99,9 @@ class CarResource extends Resource
                             ->label('Car Photo')
                             ->image()
                             ->imageEditor()
+                            ->disk('gcs')
+                            ->directory('cars')
+                            ->visibility('public'),
                     ])
                     ->columnSpanFull(),
                 Forms\Components\Toggle::make('active')
@@ -97,7 +114,8 @@ class CarResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image_url')
-                    ->label('Car'),
+                    ->label('Car Photo')
+                    ->disk('gcs'),
                 Tables\Columns\TextColumn::make('name')
                     ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable(),

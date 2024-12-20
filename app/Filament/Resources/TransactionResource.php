@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
+use Filament\Forms\Get;
 
 class TransactionResource extends Resource
 {
@@ -28,7 +29,8 @@ class TransactionResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('duration_day')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->suffix('Day'),
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
@@ -42,7 +44,8 @@ class TransactionResource extends Resource
                         'down_payment' => 'Down Payment',
                         'paid' => 'Paid',
                     ])
-                    ->required(),
+                    ->required()
+                    ->live(),
                 Forms\Components\Select::make('method')
                     ->options([
                         'transfer' => 'Transfer',
@@ -50,6 +53,12 @@ class TransactionResource extends Resource
                         'auto_payment' => 'Auto Payment',
                     ])
                     ->required(),
+                Forms\Components\FileUpload::make('payment_image')
+                    ->disk('gcs')
+                    ->directory('payments')
+                    ->visibility('public')
+                    ->columnSpanFull()
+                    ->visible(fn(Get $get): bool => $get('status') != null && $get('status') !== 'waiting_payment'),
             ]);
     }
 

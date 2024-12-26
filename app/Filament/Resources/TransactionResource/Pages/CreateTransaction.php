@@ -6,6 +6,7 @@ use App\Filament\Resources\TransactionResource;
 use App\Models\Car;
 use App\Models\CarRented;
 use App\Models\Transaction;
+use App\Models\User;
 use Exception;
 use Filament\Actions;
 use Filament\Actions\Action;
@@ -70,19 +71,45 @@ class CreateTransaction extends CreateRecord
         $invoiceNumber = generateInvoice($durationDay);
         $data['no_invoice'] = $invoiceNumber;
 
-        // End Date
+        // Date
         $startDate = Carbon::parse($data['start_date']);
-        $endDate = $startDate->copy()->addDays($durationDay);
+        $endDate = $startDate->addDays($durationDay);
+        $data['start_date'] = $startDate;
         $data['end_date'] = $endDate;
 
-        // Total Price
+        // User data
+        $user = User::where('id', $data['user_id'])->first();
+        $data['user_name'] = $user->name;
+        $data['user_email'] = $user->email;
+        $data['user_phone'] = $user->phone_number;
+
+        // Car data
         $car = Car::where('id', $data['car_id'])->first();
-        $totalPrice = $car->price_per_day * $durationDay;
+        $data['car_name'] = $car->name;
+        $data['car_brand'] = $car->brand->name;
+        $data['car_year'] = $car->year;
+        $data['car_price_per_day'] = $car->price_per_day;
+        $data['car_image_url'] = $car->image_url;
+        $carPricePerDay = $car->price_per_day;
+        $data['car_price_per_day'] = $carPricePerDay;
         $discount = $car->discount;
+        if ($discount) {
+            $data['car_discount'] = $discount;
+        } else {
+            $data['car_discount'] = 0;
+        }
+        $tax = $car->tax;
+        if ($tax) {
+            $data['car_tax'] = $tax;
+        } else {
+            $data['car_tax'] = 0;
+        }
+
+        // Calculate total price
+        $totalPrice = $carPricePerDay * $durationDay;
         if ($discount) {
             $totalPrice = $totalPrice - ($totalPrice * $discount / 100);
         }
-        $tax = $car->tax;
         if ($tax) {
             $totalPrice = $totalPrice + ($totalPrice * $tax / 100);
         }
@@ -92,7 +119,11 @@ class CreateTransaction extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
+
+        //dd($data);
         $trx = static::getModel()::create($data);
+        // dd($data);
+        // $trx = Transaction::create($data);
         CarRented::create(
             [
                 'car_id' => $data['car_id'],

@@ -51,10 +51,20 @@ class TransactionResource extends Resource
                     )
                     ->required(),
                 Forms\Components\Select::make('status_payment')
-                    ->options([
-                        'waiting' => 'Waiting',
-                        'paid' => 'Paid',
-                    ])
+                    ->options(function ($record) {
+                        if ($record) {
+                            return [
+                                'waiting' => 'Waiting',
+                                'reject' => 'Rejected',
+                                'paid' => 'Paid',
+                            ];
+                        } else {
+                            return [
+                                'waiting' => 'Waiting',
+                                'paid' => 'Paid',
+                            ];
+                        }
+                    })
                     ->required()
                     ->live(),
                 Forms\Components\Select::make('method_payment')
@@ -100,34 +110,30 @@ class TransactionResource extends Resource
                 Tables\Columns\TextColumn::make('total_price')
                     ->money('IDR', locale: 'id')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user_approved')
+                Tables\Columns\TextColumn::make('user_name_approved')
                     ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('status_payment')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
-                        'waiting_payment' => 'gray',
-                        'down_payment' => 'warning',
+                        'waiting' => 'gray',
+                        'reject' => 'danger',
                         'paid' => 'success',
                     })
                     ->formatStateUsing(function (string $state): string {
                         if ($state === 'paid') {
                             return 'Paid';
-                        } else if ($state === 'down_payment') {
-                            return 'Down Payment';
+                        } else if ($state === 'reject') {
+                            return 'Rejected';
                         } else {
                             return 'Waiting Payment';
                         }
                     })
                     ->sortable(),
-                Tables\Columns\TextColumn::make('down_payment')
-                    ->money('IDR', locale: 'id')
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->sortable(),
                 Tables\Columns\ImageColumn::make('payment_image')
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('method')
+                Tables\Columns\TextColumn::make('method_payment')
                     ->formatStateUsing(function (string $state): string {
                         if ($state === 'transfer') {
                             return 'Transfer';
@@ -157,12 +163,12 @@ class TransactionResource extends Resource
                     ->button()
                     ->requiresConfirmation()
                     ->color('danger')
-                    ->action(fn(Transaction $record) => $record->update([])),
+                    ->action(fn(Transaction $record) => $record),
                 Action::make('approve')
                     ->button()
                     ->requiresConfirmation()
                     ->color('success')
-                    ->action(fn(Transaction $record) => $record->update([])),
+                    ->action(fn(Transaction $record) => $record),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

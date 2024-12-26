@@ -20,11 +20,24 @@ class Transaction extends Model
         'duration_day',
         'total_price',
         'user_id',
+        'user_name',
+        'user_phone',
+        'user_email',
         'car_id',
-        'user_approved',
-        'status',
-        'payment',
-        'method',
+        'car_name',
+        'car_brand',
+        'car_image_url',
+        'car_year',
+        'car_price_per_day',
+        'car_tax',
+        'car_discount',
+        'user_approved_id',
+        'user_name_approved',
+        'user_email_approved',
+        'status_payment',
+        'method_payment',
+        'payment_image',
+        'reason_rejected'
     ];
 
     public function user(): BelongsTo

@@ -17,6 +17,7 @@ use Filament\Forms\Components\Actions\Action as ActionsAction;
 use Filament\Forms\Get;
 use Illuminate\Support\Carbon;
 use Filament\Notifications\Collection;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables\Actions\Action;
 
 class TransactionResource extends Resource
@@ -157,18 +158,24 @@ class TransactionResource extends Resource
                 //
             ])
             ->actions([
-                // Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->visible(fn(Transaction $record) => $record && $record->status_payment !== 'waiting'),
                 // Tables\Actions\EditAction::make(),
                 Action::make('reject')
                     ->button()
+                    ->size(ActionSize::Small)
                     ->requiresConfirmation()
                     ->color('danger')
-                    ->action(fn(Transaction $record) => $record),
+                    ->icon('heroicon-m-x-mark')
+                    ->action(fn(Transaction $record) => $record)
+                    ->visible(fn(Transaction $record) => $record && $record->status_payment === 'waiting'),
                 Action::make('approve')
                     ->button()
+                    ->size(ActionSize::Small)
                     ->requiresConfirmation()
                     ->color('success')
-                    ->action(fn(Transaction $record) => $record),
+                    ->icon('heroicon-m-check')
+                    ->visible(fn(Transaction $record) => $record && $record->status_payment === 'waiting'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

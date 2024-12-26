@@ -76,4 +76,9 @@ class User extends Authenticatable
     {
         $this->attributes['name'] = strtolower($value);
     }
+
+    public function getRole()
+    {
+        return $this->attributes['role'];
+    }
 }

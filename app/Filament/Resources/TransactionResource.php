@@ -13,7 +13,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
+use Filament\Forms\Components\Actions\Action as ActionsAction;
 use Filament\Forms\Get;
+use Filament\Notifications\Collection;
+use Filament\Tables\Actions\Action;
 
 class TransactionResource extends Resource
 {
@@ -38,15 +41,14 @@ class TransactionResource extends Resource
                 Forms\Components\Select::make('car_id')
                     ->relationship('car', 'name')
                     ->required(),
-                Forms\Components\Select::make('status')
+                Forms\Components\Select::make('status_payment')
                     ->options([
-                        'waiting_payment' => 'Waiting Payment',
-                        'down_payment' => 'Down Payment',
+                        'waiting' => 'Waiting',
                         'paid' => 'Paid',
                     ])
                     ->required()
                     ->live(),
-                Forms\Components\Select::make('method')
+                Forms\Components\Select::make('method_payment')
                     ->options([
                         'transfer' => 'Transfer',
                         'cash' => 'Cash',
@@ -58,7 +60,7 @@ class TransactionResource extends Resource
                     ->directory('payments')
                     ->visibility('public')
                     ->columnSpanFull()
-                    ->visible(fn(Get $get): bool => $get('status') != null && $get('status') !== 'waiting_payment'),
+                    ->visible(fn(Get $get): bool => $get('status') != null && $get('status') !== 'waiting'),
             ]);
     }
 
@@ -140,8 +142,18 @@ class TransactionResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\ViewAction::make(),
+                // Tables\Actions\EditAction::make(),
+                Action::make('reject')
+                    ->button()
+                    ->requiresConfirmation()
+                    ->color('danger')
+                    ->action(fn(Transaction $record) => $record->update([])),
+                Action::make('approve')
+                    ->button()
+                    ->requiresConfirmation()
+                    ->color('success')
+                    ->action(fn(Transaction $record) => $record->update([])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

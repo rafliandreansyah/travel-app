@@ -24,5 +24,14 @@ class UserSeeder extends Seeder
             'role' => 'admin',
             'active' => true
         ]);
+        DB::table('users')->insert([
+            'id' => Str::uuid(),
+            'name' => 'azha',
+            'email' => 'azha@gmail.com',
+            'password' => Hash::make('amaterasu'),
+            'phone_number' => '6281232720111',
+            'role' => 'user',
+            'active' => true
+        ]);
     }
 }

@@ -16,6 +16,7 @@ use App\Filament\Resources\CarResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\CarResource\RelationManagers;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Tabs;
 
 class CarResource extends Resource
 {
@@ -29,83 +30,93 @@ class CarResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make(2)
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('year')
-                            ->required()
-                            ->numeric(),
-                        Forms\Components\TextInput::make('capacity')
-                            ->required()
-                            ->numeric()
-                            ->suffix('Person'),
-                        Forms\Components\TextInput::make('cc')
-                            ->label('CC')
-                            ->required()
-                            ->numeric(),
-                        Forms\Components\Select::make('fuel_type')
-                            ->options([
-                                'solar' => 'Solar',
-                                'bensin' => 'Bensin',
-                                'listrik' => 'Listrik',
-                            ])
-                            ->required(),
-                        Forms\Components\Select::make('transmission')
-                            ->options([
-                                'manual' => 'Manual',
-                                'automatic' => 'Automatic',
-                            ])
-                            ->required(),
-                        Forms\Components\Select::make('brand_id')
-                            ->relationship('brand', 'name')
-                            ->required(),
-                        Forms\Components\TextInput::make('luggage')
-                            ->numeric(),
-                        Fieldset::make('Pricing')
+
+                Tabs::make('Input Car')
+                    ->tabs([
+                        Tabs\Tab::make('Car Data')
                             ->schema([
-                                Grid::make(3)
+                                Grid::make(2)
                                     ->schema([
-                                        Forms\Components\TextInput::make('price_per_day')
+                                        Forms\Components\TextInput::make('name')
                                             ->required()
-                                            ->prefix('Rp.')
+                                            ->maxLength(255),
+                                        Forms\Components\TextInput::make('year')
+                                            ->required()
                                             ->numeric(),
-                                        Forms\Components\TextInput::make('tax')
+                                        Forms\Components\TextInput::make('capacity')
+                                            ->required()
                                             ->numeric()
-                                            ->suffixIcon('heroicon-m-percent-badge'),
-                                        Forms\Components\TextInput::make('discount')
-                                            ->numeric()
-                                            ->suffixIcon('heroicon-m-percent-badge'),
+                                            ->suffix('Person'),
+                                        Forms\Components\TextInput::make('cc')
+                                            ->label('CC')
+                                            ->required()
+                                            ->numeric(),
+                                        Forms\Components\Select::make('fuel_type')
+                                            ->options([
+                                                'solar' => 'Solar',
+                                                'bensin' => 'Bensin',
+                                                'listrik' => 'Listrik',
+                                            ])
+                                            ->required(),
+                                        Forms\Components\Select::make('transmission')
+                                            ->options([
+                                                'manual' => 'Manual',
+                                                'automatic' => 'Automatic',
+                                            ])
+                                            ->required(),
+                                        Forms\Components\Select::make('brand_id')
+                                            ->relationship('brand', 'name')
+                                            ->required(),
+                                        Forms\Components\TextInput::make('luggage')
+                                            ->numeric(),
+                                        Fieldset::make('Pricing')
+                                            ->schema([
+                                                Grid::make(3)
+                                                    ->schema([
+                                                        Forms\Components\TextInput::make('price_per_day')
+                                                            ->required()
+                                                            ->prefix('Rp.')
+                                                            ->numeric(),
+                                                        Forms\Components\TextInput::make('tax')
+                                                            ->numeric()
+                                                            ->suffixIcon('heroicon-m-percent-badge'),
+                                                        Forms\Components\TextInput::make('discount')
+                                                            ->numeric()
+                                                            ->suffixIcon('heroicon-m-percent-badge'),
+                                                    ]),
+                                            ]),
                                     ]),
+                                Forms\Components\Textarea::make('description')
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Forms\Components\Toggle::make('active')
+                                    ->required(),
                             ]),
-                    ]),
-                Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\FileUpload::make('image_url')
-                    ->label('Car Photo')
-                    ->image()
-                    ->disk('gcs')
-                    ->directory('cars')
-                    ->visibility('public')
-                    ->required()
-                    ->columnSpanFull(),
-                Repeater::make('imageDetails')
-                    ->label('Car Highlights')
-                    ->relationship()
-                    ->schema([
-                        Forms\Components\FileUpload::make('image_url')
-                            ->label('Car Photo')
-                            ->image()
-                            ->imageEditor()
-                            ->disk('gcs')
-                            ->directory('cars')
-                            ->visibility('public'),
-                    ])
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('active')
-                    ->required(),
+                        Tabs\Tab::make('Images')
+                            ->schema([
+                                Forms\Components\FileUpload::make('image_url')
+                                    ->label('Car Photo')
+                                    ->image()
+                                    ->disk('gcs')
+                                    ->directory('cars')
+                                    ->visibility('public')
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Repeater::make('imageDetails')
+                                    ->label('Car Highlights')
+                                    ->relationship()
+                                    ->schema([
+                                        Forms\Components\FileUpload::make('image_url')
+                                            ->label('Car Photo')
+                                            ->image()
+                                            ->imageEditor()
+                                            ->disk('gcs')
+                                            ->directory('cars')
+                                            ->visibility('public'),
+                                    ])
+                                    ->columnSpanFull(),
+                            ]),
+                    ])->columnSpanFull(),
             ]);
     }
 

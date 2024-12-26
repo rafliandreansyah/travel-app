@@ -15,6 +15,7 @@ use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
 use Filament\Forms\Components\Actions\Action as ActionsAction;
 use Filament\Forms\Get;
+use Illuminate\Support\Carbon;
 use Filament\Notifications\Collection;
 use Filament\Tables\Actions\Action;
 
@@ -35,11 +36,19 @@ class TransactionResource extends Resource
                     ->numeric()
                     ->suffix('Day'),
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
+                    ->relationship(
+                        'user',
+                        'name',
+                        modifyQueryUsing: fn(Builder $query) => $query->where('active', 1)
+                    )
                     ->required(),
 
                 Forms\Components\Select::make('car_id')
-                    ->relationship('car', 'name')
+                    ->relationship(
+                        'car',
+                        'name',
+                        modifyQueryUsing: fn(Builder $query) => $query->where('active', 1)
+                    )
                     ->required(),
                 Forms\Components\Select::make('status_payment')
                     ->options([

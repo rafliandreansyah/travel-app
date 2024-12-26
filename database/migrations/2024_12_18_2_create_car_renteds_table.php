@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('car_renteds', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('car_id')->nullable()->constrained();
-            $table->foreignUuid('transaction_id')->nullable()->constrained();
+            $table->foreignUuid('car_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('transaction_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->timestamps();

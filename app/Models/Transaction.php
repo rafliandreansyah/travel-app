@@ -31,6 +31,7 @@ class Transaction extends Model
         'car_price_per_day',
         'car_tax',
         'car_discount',
+        'driver',
         'user_approved_id',
         'user_name_approved',
         'user_email_approved',

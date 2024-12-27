@@ -66,7 +66,6 @@ class CreateTransaction extends CreateRecord
     {
 
         $durationDay = intval($data['duration_day']);
-
         // Invoice number
         $invoiceNumber = generateInvoice($durationDay);
         $data['no_invoice'] = $invoiceNumber;
@@ -112,6 +111,9 @@ class CreateTransaction extends CreateRecord
         }
         if ($tax) {
             $totalPrice = $totalPrice + ($totalPrice * $tax / 100);
+        }
+        if ($data['driver']) {
+            $totalPrice += 250000;
         }
         $data['total_price'] = $totalPrice;
         return $data;

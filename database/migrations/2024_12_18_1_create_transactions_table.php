@@ -30,6 +30,7 @@ return new class extends Migration
             $table->double('car_price_per_day');
             $table->double('car_tax');
             $table->double('car_discount');
+            $table->boolean('driver');
             $table->foreignUuid('user_approved_id')->nullable()->constrained('users', 'id')->nullOnDelete();
             $table->string('user_name_approved')->nullable();
             $table->string('user_email_approved')->nullable();

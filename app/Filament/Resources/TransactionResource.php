@@ -14,6 +14,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
 use Filament\Forms\Components\Actions\Action as ActionsAction;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
 use Illuminate\Support\Carbon;
 use Filament\Notifications\Collection;
@@ -80,7 +83,11 @@ class TransactionResource extends Resource
                     ->directory('payments')
                     ->visibility('public')
                     ->columnSpanFull()
-                    ->visible(fn(Get $get): bool => $get('status') != null && $get('status') !== 'waiting'),
+                    ->visible(fn(Get $get): bool => $get('status_payment') != null && $get('status_payment') !== 'waiting'),
+                Toggle::make('driver')
+                    ->label('Using the driver')
+                    ->onIcon('heroicon-m-check')
+                    ->offIcon('heroicon-m-x-mark'),
             ]);
     }
 

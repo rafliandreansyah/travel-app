@@ -107,6 +107,7 @@ class CarResource extends Resource
                                     ->relationship()
                                     ->schema([
                                         Forms\Components\FileUpload::make('image_url')
+                                            ->required()
                                             ->label('Car Photo')
                                             ->image()
                                             ->imageEditor()

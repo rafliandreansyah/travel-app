@@ -53,7 +53,7 @@ class Transaction extends Model
 
     public function carRented(): HasOne
     {
-        return $this->hasOne(Car::class);
+        return $this->hasOne(CarRented::class);
     }
 
     public function setUserApprovedAttribute($value)

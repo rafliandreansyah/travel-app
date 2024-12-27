@@ -24,8 +24,8 @@ class CarRented extends Model
         return $this->belongsTo(Car::class);
     }
 
-    public function transaction(): HasOne
+    public function transaction(): BelongsTo
     {
-        return $this->hasOne(Transaction::class);
+        return $this->belongsTo(Transaction::class);
     }
 }

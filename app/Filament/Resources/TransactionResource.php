@@ -16,12 +16,15 @@ use App\Filament\Resources\TransactionResource\RelationManagers;
 use Filament\Forms\Components\Actions\Action as ActionsAction;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
 use Illuminate\Support\Carbon;
 use Filament\Notifications\Collection;
+use Filament\Notifications\Notification;
 use Filament\Support\Enums\ActionSize;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\SelectFilter;
 
 class TransactionResource extends Resource
 {
@@ -119,6 +122,7 @@ class TransactionResource extends Resource
                     ->money('IDR', locale: 'id')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user_name_approved')
+                    ->label('Approved Name')
                     ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -136,6 +140,24 @@ class TransactionResource extends Resource
                             return 'Rejected';
                         } else {
                             return 'Waiting Payment';
+                        }
+                    })
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('reason_rejected')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('driver')
+                    ->label('Using the driver')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        '1' => 'success',
+                        '0' => 'gray',
+                        '' => 'gray',
+                    })
+                    ->formatStateUsing(function (string $state): string {
+                        if ($state) {
+                            return 'Yes';
+                        } else {
+                            return 'No';
                         }
                     })
                     ->sortable(),
@@ -162,19 +184,48 @@ class TransactionResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('status_payment')
+                    ->options([
+                        'waiting' => 'Waiting',
+                        'reject' => 'Rejected',
+                        'paid' => 'Paid',
+                    ]),
+                SelectFilter::make('driver')
+                    ->label('Using the driver')
+                    ->options([
+                        '1' => 'Yes',
+                        '0' => 'No',
+                    ])
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->visible(fn(Transaction $record) => $record && $record->status_payment !== 'waiting'),
-                // Tables\Actions\EditAction::make(),
                 Action::make('reject')
                     ->button()
                     ->size(ActionSize::Small)
                     ->requiresConfirmation()
                     ->color('danger')
                     ->icon('heroicon-m-x-mark')
-                    ->action(fn(Transaction $record) => $record)
+                    ->form([
+                        Textarea::make('reason_rejected')
+                            ->label('Reason Reject')
+                            ->required()
+                    ])
+                    ->action(function (array $data, Transaction $record) {
+                        $record->carRented->delete();
+                        $user = auth()->user();
+                        $record->update([
+                            'status_payment' => 'reject',
+                            'user_approved_id' => $user->id,
+                            'user_name_approved' => $user->name,
+                            'user_email_approved' => $user->email,
+                            'reason_rejected' => $data['reason_rejected'],
+                        ]);
+                        Notification::make()
+                            ->title('Transaction rejected')
+                            ->success()
+                            ->send();
+                    })
                     ->visible(fn(Transaction $record) => $record && $record->status_payment === 'waiting'),
                 Action::make('approve')
                     ->button()
@@ -182,7 +233,20 @@ class TransactionResource extends Resource
                     ->requiresConfirmation()
                     ->color('success')
                     ->icon('heroicon-m-check')
-                    ->visible(fn(Transaction $record) => $record && $record->status_payment === 'waiting'),
+                    ->visible(fn(Transaction $record) => $record && $record->status_payment === 'waiting')
+                    ->action(function (Transaction $record) {
+                        $user = auth()->user();
+                        $record->update([
+                            'status_payment' => 'paid',
+                            'user_approved_id' => $user->id,
+                            'user_name_approved' => $user->name,
+                            'user_email_approved' => $user->email,
+                        ]);
+                        Notification::make()
+                            ->title('Transaction approved')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

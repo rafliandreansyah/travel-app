@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('user_phone');
             $table->string('user_email');
             $table->foreignUuid('car_id')->constrained()->nullOnDelete();
+            $table->foreignUuid('car_company_id')->constrained('companies', 'id')->nullOnDelete();
             $table->string('car_name');
             $table->string('car_brand');
             $table->string('car_image_url', 2048);

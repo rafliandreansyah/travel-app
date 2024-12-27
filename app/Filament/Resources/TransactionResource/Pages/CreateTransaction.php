@@ -84,6 +84,7 @@ class CreateTransaction extends CreateRecord
 
         // Car data
         $car = Car::where('id', $data['car_id'])->first();
+        $data['car_company_id'] = $car->company_id;
         $data['car_name'] = $car->name;
         $data['car_brand'] = $car->brand->name;
         $data['car_year'] = $car->year;

@@ -35,55 +35,62 @@ class CarResource extends Resource
                     ->tabs([
                         Tabs\Tab::make('Car Data')
                             ->schema([
-                                Grid::make(2)
+                                Fieldset::make('Car Information')
                                     ->schema([
-                                        Forms\Components\TextInput::make('name')
-                                            ->required()
-                                            ->maxLength(255),
-                                        Forms\Components\TextInput::make('year')
-                                            ->required()
-                                            ->numeric(),
-                                        Forms\Components\TextInput::make('capacity')
-                                            ->required()
-                                            ->numeric()
-                                            ->suffix('Person'),
-                                        Forms\Components\TextInput::make('cc')
-                                            ->label('CC')
-                                            ->required()
-                                            ->numeric(),
-                                        Forms\Components\Select::make('fuel_type')
-                                            ->options([
-                                                'solar' => 'Solar',
-                                                'bensin' => 'Bensin',
-                                                'listrik' => 'Listrik',
-                                            ])
-                                            ->required(),
-                                        Forms\Components\Select::make('transmission')
-                                            ->options([
-                                                'manual' => 'Manual',
-                                                'automatic' => 'Automatic',
-                                            ])
-                                            ->required(),
-                                        Forms\Components\Select::make('brand_id')
-                                            ->relationship('brand', 'name')
-                                            ->required(),
-                                        Forms\Components\TextInput::make('luggage')
-                                            ->numeric(),
-                                        Fieldset::make('Pricing')
+                                        Grid::make(3)
                                             ->schema([
-                                                Grid::make(3)
-                                                    ->schema([
-                                                        Forms\Components\TextInput::make('price_per_day')
-                                                            ->required()
-                                                            ->prefix('Rp.')
-                                                            ->numeric(),
-                                                        Forms\Components\TextInput::make('tax')
-                                                            ->numeric()
-                                                            ->suffixIcon('heroicon-m-percent-badge'),
-                                                        Forms\Components\TextInput::make('discount')
-                                                            ->numeric()
-                                                            ->suffixIcon('heroicon-m-percent-badge'),
-                                                    ]),
+                                                Forms\Components\TextInput::make('name')
+                                                    ->required()
+                                                    ->maxLength(255),
+                                                Forms\Components\Select::make('company_id')
+                                                    ->relationship('company', 'travel_name')
+                                                    ->required(),
+                                                Forms\Components\Select::make('brand_id')
+                                                    ->relationship('brand', 'name')
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('year')
+                                                    ->required()
+                                                    ->numeric(),
+                                                Forms\Components\TextInput::make('capacity')
+                                                    ->required()
+                                                    ->numeric()
+                                                    ->suffix('Person'),
+                                                Forms\Components\TextInput::make('cc')
+                                                    ->label('CC')
+                                                    ->required()
+                                                    ->numeric(),
+                                                Forms\Components\Select::make('fuel_type')
+                                                    ->options([
+                                                        'solar' => 'Solar',
+                                                        'bensin' => 'Bensin',
+                                                        'listrik' => 'Listrik',
+                                                    ])
+                                                    ->required(),
+                                                Forms\Components\Select::make('transmission')
+                                                    ->options([
+                                                        'manual' => 'Manual',
+                                                        'automatic' => 'Automatic',
+                                                    ])
+                                                    ->required(),
+                                                Forms\Components\TextInput::make('luggage')
+                                                    ->numeric(),
+                                            ]),
+
+                                    ]),
+                                Fieldset::make('Pricing')
+                                    ->schema([
+                                        Grid::make(3)
+                                            ->schema([
+                                                Forms\Components\TextInput::make('price_per_day')
+                                                    ->required()
+                                                    ->prefix('Rp.')
+                                                    ->numeric(),
+                                                Forms\Components\TextInput::make('tax')
+                                                    ->numeric()
+                                                    ->suffixIcon('heroicon-m-percent-badge'),
+                                                Forms\Components\TextInput::make('discount')
+                                                    ->numeric()
+                                                    ->suffixIcon('heroicon-m-percent-badge'),
                                             ]),
                                     ]),
                                 Forms\Components\Textarea::make('description')
@@ -167,6 +174,11 @@ class CarResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('brand.name')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('company.travel_name')
                     ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable()
                     ->sortable()

@@ -13,6 +13,7 @@ class Car extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
+        'company_id',
         'name',
         'image_url',
         'year',

@@ -47,6 +47,7 @@ class UserResource extends Resource
                         'driver' => 'Driver',
                         'user' => 'User',
                     ])
+                    ->live()
                     ->required(),
                 Forms\Components\DatePicker::make('date_of_birth'),
                 Forms\Components\Select::make('gender')
@@ -55,7 +56,8 @@ class UserResource extends Resource
                         'F' => 'Female',
                     ]),
                 Forms\Components\Select::make('company_id')
-                    ->relationship(name: 'company', titleAttribute: 'travel_name'),
+                    ->relationship(name: 'company', titleAttribute: 'travel_name')
+                    ->required(fn($get) => $get('role') === 'admin' || $get('role') === 'mitra' || $get('role') === 'staff'),
                 Forms\Components\Toggle::make('active')
                     ->required(),
                 Forms\Components\FileUpload::make('image_url')

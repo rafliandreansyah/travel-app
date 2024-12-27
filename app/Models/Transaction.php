@@ -23,6 +23,7 @@ class Transaction extends Model
         'user_name',
         'user_phone',
         'user_email',
+        'car_company_id',
         'car_id',
         'car_name',
         'car_brand',
@@ -49,6 +50,11 @@ class Transaction extends Model
     public function car(): BelongsTo
     {
         return $this->belongsTo(Car::class);
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class,  'car_company_id');
     }
 
     public function carRented(): HasOne

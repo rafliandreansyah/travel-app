@@ -108,6 +108,9 @@ class TransactionResource extends Resource
                     ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords()),
                 Tables\Columns\TextColumn::make('car.name')
                     ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords()),
+                Tables\Columns\TextColumn::make('company.travel_name')
+                    ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('start_date')
                     ->dateTime()
                     ->sortable(),

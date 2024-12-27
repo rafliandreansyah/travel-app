@@ -31,6 +31,11 @@ class Company extends Model
         return $this->hasMany(Car::class);
     }
 
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
     public function setTravelNameAttribute($value)
     {
         $this->attributes['travel_name'] = strtolower($value);

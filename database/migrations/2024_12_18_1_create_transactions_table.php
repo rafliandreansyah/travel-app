@@ -17,7 +17,7 @@ return new class extends Migration
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->integer('duration_day');
-            $table->double('total_price');
+            $table->decimal('total_price', 12, 2);
             $table->foreignUuid('user_id')->constrained()->nullOnDelete();
             $table->string('user_name');
             $table->string('user_phone');
@@ -28,14 +28,14 @@ return new class extends Migration
             $table->string('car_brand');
             $table->string('car_image_url', 2048);
             $table->string('car_year');
-            $table->double('car_price_per_day');
+            $table->decimal('car_price_per_day', 8, 2);
             $table->double('car_tax');
             $table->double('car_discount');
             $table->boolean('driver');
             $table->foreignUuid('user_approved_id')->nullable()->constrained('users', 'id')->nullOnDelete();
             $table->string('user_name_approved')->nullable();
             $table->string('user_email_approved')->nullable();
-            $table->enum('status_payment', ['waiting', 'reject', 'paid']);
+            $table->enum('status_payment', ['waiting_payment', 'waiting_approve', 'reject', 'paid']);
             $table->enum('method_payment', ['transfer', 'cash', 'auto_payment']);
             $table->string('payment_image', 2048)->nullable();
             $table->longText('reason_rejected')->nullable();

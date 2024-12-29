@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('capacity');
             $table->integer('luggage')->nullable();
             $table->integer('cc');
-            $table->double('price_per_day');
+            $table->decimal('price_per_day');
             $table->double('tax')->nullable()->default(0.0);
             $table->double('discount')->nullable()->default(0.0);
             $table->longText('description');

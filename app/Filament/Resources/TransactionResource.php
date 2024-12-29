@@ -61,13 +61,14 @@ class TransactionResource extends Resource
                     ->options(function ($record) {
                         if ($record) {
                             return [
-                                'waiting' => 'Waiting',
+                                'waiting_payment' => 'Waiting Payment',
+                                'waiting_approve' => 'Waiting Approve',
                                 'reject' => 'Rejected',
                                 'paid' => 'Paid',
                             ];
                         } else {
                             return [
-                                'waiting' => 'Waiting',
+                                'waiting_payment' => 'Waiting Payment',
                                 'paid' => 'Paid',
                             ];
                         }
@@ -86,7 +87,7 @@ class TransactionResource extends Resource
                     ->directory('payments')
                     ->visibility('public')
                     ->columnSpanFull()
-                    ->visible(fn(Get $get): bool => $get('status_payment') != null && $get('status_payment') !== 'waiting'),
+                    ->visible(fn(Get $get): bool => $get('status_payment') != null && $get('status_payment') !== 'waiting_payment'),
                 Toggle::make('driver')
                     ->label('Using the driver')
                     ->onIcon('heroicon-m-check')
@@ -132,7 +133,8 @@ class TransactionResource extends Resource
                 Tables\Columns\TextColumn::make('status_payment')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
-                        'waiting' => 'gray',
+                        'waiting_payment' => 'gray',
+                        'waiting_approve' => 'warning',
                         'reject' => 'danger',
                         'paid' => 'success',
                     })
@@ -189,7 +191,8 @@ class TransactionResource extends Resource
             ->filters([
                 SelectFilter::make('status_payment')
                     ->options([
-                        'waiting' => 'Waiting',
+                        'waiting_payment' => 'Waiting Payment',
+                        'waiting_approve' => 'Waiting Approve',
                         'reject' => 'Rejected',
                         'paid' => 'Paid',
                     ]),
@@ -229,14 +232,14 @@ class TransactionResource extends Resource
                             ->success()
                             ->send();
                     })
-                    ->visible(fn(Transaction $record) => $record && $record->status_payment === 'waiting'),
+                    ->visible(fn(Transaction $record) => $record && $record->status_payment === 'waiting_approve'),
                 Action::make('approve')
                     ->button()
                     ->size(ActionSize::Small)
                     ->requiresConfirmation()
                     ->color('success')
                     ->icon('heroicon-m-check')
-                    ->visible(fn(Transaction $record) => $record && $record->status_payment === 'waiting')
+                    ->visible(fn(Transaction $record) => $record && $record->status_payment === 'waiting_approve')
                     ->action(function (Transaction $record) {
                         $user = auth()->user();
                         $record->update([

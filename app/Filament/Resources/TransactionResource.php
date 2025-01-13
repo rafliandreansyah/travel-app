@@ -143,8 +143,10 @@ class TransactionResource extends Resource
                             return 'Paid';
                         } else if ($state === 'reject') {
                             return 'Rejected';
-                        } else {
+                        } else if ($state === 'waiting_payment') {
                             return 'Waiting Payment';
+                        } else {
+                            return 'Waiting Approve';
                         }
                     })
                     ->sortable(),

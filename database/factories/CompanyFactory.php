@@ -28,6 +28,10 @@ class CompanyFactory extends Factory
             'address' => fake()->address(),
             'postal_code' => fake()->randomNumber(6, true),
             'phone_number' => fake()->unique()->phoneNumber(),
+            'created_at' => fake()->dateTimeBetween(
+                now()->subYear()->startOfYear()->toDateString(),  // Awal tahun kemarin
+                now()->subYear()->endOfYear()->toDateString()
+            ),
             'active' => true,
         ];
     }

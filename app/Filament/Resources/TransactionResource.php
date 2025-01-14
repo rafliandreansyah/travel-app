@@ -10,17 +10,10 @@ use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TransactionResource\Pages;
-use App\Filament\Resources\TransactionResource\RelationManagers;
-use Filament\Forms\Components\Actions\Action as ActionsAction;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
-use Illuminate\Support\Carbon;
-use Filament\Notifications\Collection;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\ActionSize;
 use Filament\Tables\Actions\Action;
@@ -49,7 +42,6 @@ class TransactionResource extends Resource
                         modifyQueryUsing: fn(Builder $query) => $query->where('active', 1)
                     )
                     ->required(),
-
                 Forms\Components\Select::make('car_id')
                     ->relationship(
                         'car',
@@ -87,6 +79,7 @@ class TransactionResource extends Resource
                     ->directory('payments')
                     ->visibility('public')
                     ->columnSpanFull()
+                    ->openable()
                     ->visible(fn(Get $get): bool => $get('status_payment') != null && $get('status_payment') !== 'waiting_payment'),
                 Toggle::make('driver')
                     ->label('Using the driver')
@@ -256,6 +249,7 @@ class TransactionResource extends Resource
                             ->send();
                     }),
             ])
+            ->modifyQueryUsing(fn($query) => $query->orderBy('status_payment', 'desc'))
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

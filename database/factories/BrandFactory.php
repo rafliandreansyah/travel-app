@@ -23,6 +23,10 @@ class BrandFactory extends Factory
         return [
             'name' => fake()->company(),
             'description' => fake()->sentence(),
+            'created_at' => fake()->dateTimeBetween(
+                now()->subYear()->startOfYear()->toDateString(),  // Awal tahun kemarin
+                now()->subYear()->endOfYear()->toDateString()
+            ),
         ];
     }
 }

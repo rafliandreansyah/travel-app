@@ -72,7 +72,7 @@ class CreateTransaction extends CreateRecord
 
         // Date
         $startDate = Carbon::parse($data['start_date']);
-        $endDate = $startDate->addDays($durationDay);
+        $endDate = $startDate->copy()->addDays($durationDay);
         $data['start_date'] = $startDate;
         $data['end_date'] = $endDate;
 

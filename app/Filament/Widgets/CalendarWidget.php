@@ -34,7 +34,7 @@ class CalendarWidget extends FullCalendarWidget
             ->map(
                 fn(Transaction $transaction) => EventData::make()
                     ->id($transaction->id)
-                    ->title($transaction->user_name)
+                    ->title($transaction->user_name . ' - ' . $transaction->car_name)
                     ->start($transaction->start_date)
                     ->end($transaction->end_date)
                     ->url(

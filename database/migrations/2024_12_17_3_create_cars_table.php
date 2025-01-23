@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('transmission');
             $table->string('fuel_type');
             $table->boolean('active')->nullable()->default(true);
-            $table->foreignUuid('brand_id')->constrained()->nullOnDelete();
+            $table->foreignUuid('brand_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignUuid('company_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });

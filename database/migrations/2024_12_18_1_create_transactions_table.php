@@ -18,12 +18,12 @@ return new class extends Migration
             $table->dateTime('end_date');
             $table->integer('duration_day');
             $table->decimal('total_price', 12, 2);
-            $table->foreignUuid('user_id')->constrained()->nullOnDelete();
+            $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('user_name');
             $table->string('user_phone');
             $table->string('user_email');
-            $table->foreignUuid('car_id')->constrained()->nullOnDelete();
-            $table->foreignUuid('car_company_id')->constrained('companies', 'id')->nullOnDelete();
+            $table->foreignUuid('car_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('car_company_id')->nullable()->constrained('companies', 'id')->nullOnDelete();
             $table->string('car_name');
             $table->string('car_brand');
             $table->string('car_image_url', 2048);

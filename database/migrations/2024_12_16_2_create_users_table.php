@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('phone_number');
             $table->enum('gender', ['M', 'F'])->nullable();
             $table->enum('role', ['admin', 'mitra', 'staff', 'driver', 'user']);
-            $table->foreignUuid('company_id')->nullable()->constrained();
+            $table->foreignUuid('company_id')->nullable()->constrained()->nullOnDelete();
             $table->boolean('active')->nullable()->default(true);
             $table->rememberToken();
             $table->timestamps();

@@ -48,11 +48,11 @@ class BrandResource extends Resource
                     ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                    ->dateTime(timezone: 'Asia/Jakarta')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->dateTime(timezone: 'Asia/Jakarta')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

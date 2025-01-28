@@ -96,10 +96,10 @@ class ViewTransaction extends ViewRecord
                                                 ->copyMessageDuration(1500),
                                             Infolists\Components\TextEntry::make('start_date')
                                                 ->label('Start Date')
-                                                ->dateTime(),
+                                                ->dateTime(timezone: 'Asia/Jakarta'),
                                             Infolists\Components\TextEntry::make('end_date')
                                                 ->label('End Date')
-                                                ->dateTime(),
+                                                ->dateTime(timezone: 'Asia/Jakarta'),
                                             Infolists\Components\TextEntry::make('duration_day')
                                                 ->label('Duration')
                                                 ->formatStateUsing(fn(string $state): string => $state . " Day"),

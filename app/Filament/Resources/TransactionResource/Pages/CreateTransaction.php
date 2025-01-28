@@ -27,9 +27,13 @@ class CreateTransaction extends CreateRecord
         $durationDay = intval($data['duration_day']);
 
         // End Date
-        $startDate = Carbon::parse($data['start_date']);
+        $startDate = Carbon::parse($data['start_date'], timezone: 'Asia/Jakarta');
+        $startDateUtc = $startDate->setTimezone('UTC');
+        $data['start_date'] = $startDateUtc;
+        //dd($data['start_date']);
         $endDate = $startDate->copy()->addDays($durationDay);
         $data['end_date'] = $endDate;
+        //dd($data['end_date']);
 
         // Check conflict booking cars
         $carId = $data['car_id'];
@@ -71,9 +75,11 @@ class CreateTransaction extends CreateRecord
         $data['no_invoice'] = $invoiceNumber;
 
         // Date
-        $startDate = Carbon::parse($data['start_date']);
+        $startDate = Carbon::parse($data['start_date'], timezone: 'Asia/Jakarta');
+        $startDateUtc = $startDate->setTimezone('UTC');
+        $data['start_date'] = $startDateUtc;
+        //dd($data['start_date']);
         $endDate = $startDate->copy()->addDays($durationDay);
-        $data['start_date'] = $startDate;
         $data['end_date'] = $endDate;
 
         // User data

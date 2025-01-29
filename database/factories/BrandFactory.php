@@ -20,13 +20,15 @@ class BrandFactory extends Factory
 
     public function definition(): array
     {
+        $dataDate = fake()->dateTimeBetween(
+            now()->subYear()->startOfYear()->toDateString(),  // Awal tahun kemarin
+            now()->subYear()->endOfYear()->toDateString()
+        );
         return [
             'name' => fake()->company(),
             'description' => fake()->sentence(),
-            'created_at' => fake()->dateTimeBetween(
-                now()->subYear()->startOfYear()->toDateString(),  // Awal tahun kemarin
-                now()->subYear()->endOfYear()->toDateString()
-            ),
+            'created_at' => $dataDate,
+            'updated_at' => $dataDate,
         ];
     }
 }

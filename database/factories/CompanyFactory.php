@@ -21,6 +21,10 @@ class CompanyFactory extends Factory
 
     public function definition(): array
     {
+        $dataDate = fake()->dateTimeBetween(
+            now()->subYear()->startOfYear()->toDateString(),  // Awal tahun kemarin
+            now()->subYear()->endOfYear()->toDateString()
+        );
         return [
             'travel_name' => fake()->company() . ' Travel',
             'province' => 'jawa timur',
@@ -28,10 +32,8 @@ class CompanyFactory extends Factory
             'address' => fake()->address(),
             'postal_code' => fake()->randomNumber(6, true),
             'phone_number' => fake()->unique()->phoneNumber(),
-            'created_at' => fake()->dateTimeBetween(
-                now()->subYear()->startOfYear()->toDateString(),  // Awal tahun kemarin
-                now()->subYear()->endOfYear()->toDateString()
-            ),
+            'created_at' => $dataDate,
+            'updated_at' => $dataDate,
             'active' => true,
         ];
     }

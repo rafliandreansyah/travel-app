@@ -39,7 +39,8 @@ class Transaction extends Model
         'status_payment',
         'method_payment',
         'payment_image',
-        'reason_rejected'
+        'reason_rejected',
+        'unique_code'
     ];
 
     public function user(): BelongsTo

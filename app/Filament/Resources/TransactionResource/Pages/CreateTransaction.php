@@ -123,6 +123,7 @@ class CreateTransaction extends CreateRecord
             $totalPrice += 250000;
         }
         $data['total_price'] = $totalPrice;
+        $data['unique_code'] = rand(100, 999);
         return $data;
     }
 

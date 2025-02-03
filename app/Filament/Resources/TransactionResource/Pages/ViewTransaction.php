@@ -143,9 +143,11 @@ class ViewTransaction extends ViewRecord
                                                 ->label('Rejected Reason')
                                                 ->formatStateUsing(fn(string $state): string => Str::of($state)->ucwords())
                                                 ->visible(fn($record) => $record && $record->reason_rejected != null),
+                                            Infolists\Components\TextEntry::make('unique_code')
+                                                ->label('Unique Code'),
                                             Infolists\Components\TextEntry::make('total_price')
                                                 ->label('Total Price')
-                                                ->money('IDR', locale: 'id'),
+                                                ->formatStateUsing(fn($record) => "Rp. " . number_format($record->unique_code + $record->total_price, 0, ",", ".")),
                                             ImageEntry::make('payment_image')
                                                 ->label('Payment Image')
                                                 ->disk('gcs')

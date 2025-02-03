@@ -19,6 +19,7 @@ return new class extends Migration
             $table->dateTime('end_date');
             $table->integer('duration_day');
             $table->decimal('total_price', 12, 2);
+            $table->integer('unique_code');
             $table->foreignUuid('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('user_name');
             $table->string('user_phone');

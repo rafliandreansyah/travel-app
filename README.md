@@ -99,5 +99,8 @@ Proyek ini menggunakan lisensi **MIT**.
 ## 📬 Contact
 Jika ada pertanyaan atau kontribusi, silakan buat issue atau pull request di repository ini.
 
+### Kerjasama
+email: rafliandreansyah957@gmail.com
+
 Happy coding! 🚀
 
